@@ -9,7 +9,10 @@ services:
     ports:
       - 80:8080
     networks:
-      - internal
+      internal:
+        ipv4_address: 10.5.0.5
+    depends_on:
+      - countrydictionaryapidb
   
   countrydictionaryapidb:
     image: postgres:latest
@@ -20,8 +23,13 @@ services:
     ports:
       - 5432:5432
     networks:
-      - internal
+      internal:
+        ipv4_address: 10.5.0.6
 
 networks:
   internal:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
