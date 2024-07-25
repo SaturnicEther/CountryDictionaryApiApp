@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  countrydictionaryapiapp:
+    image: ${DOCKER_REGISTRY-}countrydictionaryapiapp
+    build:
+      context: .
+      dockerfile: CountryDictionaryApiApp/Dockerfile
+    ports:
+      - 8000:8080
+    networks:
+      - internal
+  
+  countrydictionaryapidb:
+    image: postgres:latest
+    container_name: countrydictionaryapidb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
