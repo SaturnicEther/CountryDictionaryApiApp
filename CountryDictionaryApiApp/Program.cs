@@ -32,7 +32,7 @@ app.MapGet("/country/alpha3/{alpha3:alpha}", async (string alpha3, ApplicationDb
     return await db.Countries.FirstOrDefaultAsync(c => c.ISO31661Alpha3Code == alpha3);
 });
 
-app.MapGet("/country/numeric/{num:alpha}", async (string num, ApplicationDbContext db) =>
+app.MapGet("/country/numeric/{num:int}", async (string num, ApplicationDbContext db) =>
 {
     return await db.Countries.FirstOrDefaultAsync(c => c.ISO31661NumericCode == num);
 });
@@ -40,15 +40,14 @@ app.MapGet("/country/numeric/{num:alpha}", async (string num, ApplicationDbConte
 app.MapPatch("/country/{id:int}", async (int id, Country country, ApplicationDbContext db) =>
 {
     Country? result = await db.Countries.FirstOrDefaultAsync(c => c.Id == id);
-    if(result == null)
+    if(result != null)
     {
-        return null;
+        result.Name = country.Name;
+        result.ISO31661Alpha2Code = country.ISO31661Alpha2Code;
+        result.ISO31661Alpha3Code = country.ISO31661Alpha3Code;
+        result.ISO31661NumericCode = country.ISO31661NumericCode;
+        await db.SaveChangesAsync();
     }
-    country.Name = result.Name;
-    country.ISO31661Alpha2Code = result.ISO31661Alpha2Code;
-    country.ISO31661Alpha3Code = result.ISO31661Alpha3Code;
-    country.ISO31661NumericCode = result.ISO31661NumericCode;
-    await db.SaveChangesAsync();
     return result;
 });
 
